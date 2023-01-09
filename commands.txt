@@ -1,0 +1,17 @@
+cd - Sets the current working location to a specified location.
+ls(dir, gci) - Gets the files and folders in a file system drive.
+mkdir(md) - Creates a new item.
+rm(rmdir, rd, ri) - Deletes files and folders.
+clear - Clears the display in the host program.
+help(gcm) - Gets all commands.
+cat(gc) - Gets the contents of a file.
+clhy - Deletes entries from the command history.
+copy(cp, cpi) - Copies an item from one location to another.
+curl(iwr) - Gets content from a webpage on the Internet.
+del(erase) - Deletes files and folders.
+echo - Sends the specified objects to the next command in the pipeline. If the command is the last command in the pipeline, the objects are displayed in the console.
+ghy(h, history) - Gets a list of the commands entered during the current session.
+gl - Gets information about the current working location or a location stack.
+gsv - Gets the services on a local or remote computer.
+move(mi, mv) - Moves an item from one location to another.
+gps(ps) - Gets the processes that are running on the local computer or a remote computer.

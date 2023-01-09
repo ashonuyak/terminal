@@ -1,0 +1,30 @@
+.dropbtn {
+  border: none;
+  padding: 5px;
+  font: inherit;
+}
+
+.dropdown {
+  position: relative;
+  display: flex;
+}
+
+.dropdownContent {
+  display: none;
+  position: absolute;
+  margin-top: 5px;
+  margin-left: -5px;
+  z-index: 1;
+}
+
+.dropdownContentItem {
+  color: black;
+  padding: 5px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.dropdownContentItem:hover {background-color: #ddd;}
+
+.dropbtn:hover .dropdownContent {display: block;}
