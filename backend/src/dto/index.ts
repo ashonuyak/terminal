@@ -1,3 +1,3 @@
-export * as AuthDto from './auth';
-export * as UserDto from './user';
-export * as CustomizationDto from './customization';
+export * as AuthDto from './auth.dto';
+export * as UserDto from './user.dto';
+export * as CustomizationDto from './customization.dto';
