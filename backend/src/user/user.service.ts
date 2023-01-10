@@ -18,9 +18,13 @@ export class UserService {
     }
   }
 
-  async get(name: string): Promise<UserDto.User> {
+  async get(name: string): Promise<User> {
     const user = await this.userRepository.findOne({ name });
-    if (!user) throw new UserNotFoundError();
+
+    if (!user) {
+      throw new UserNotFoundError();
+    }
+
     return user;
   }
 }

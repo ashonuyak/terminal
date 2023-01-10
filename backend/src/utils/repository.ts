@@ -7,7 +7,7 @@ import { NotUniqueError } from './errors';
 export interface IRepository<Entity> {
   save(entity: Entity): Promise<Entity>;
 
-  findOne(param: Partial<Entity>): Promise<Entity | undefined>;
+  findOne(param: any): Promise<Entity | undefined>;
 
   updateOne(param: Partial<Entity>, updated: Partial<Entity>): Promise<void>;
 }
@@ -15,7 +15,7 @@ export interface IRepository<Entity> {
 export function Repository<Entity>(entity: Class<Entity>): Class<IRepository<Entity>> {
   @Injectable()
   class Repos implements IRepository<Entity> {
-    async findOne(param: Partial<Entity>, em = getManager()): Promise<Entity | undefined> {
+    async findOne(param: any, em = getManager()): Promise<Entity | undefined> {
       const res = await em.findOne(entity, { where: param });
       return res;
     }

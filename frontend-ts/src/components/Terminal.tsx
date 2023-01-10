@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
 
-import PropTypes from 'prop-types';
-
 import Utils from '../common/Utils';
 import { TerminalContext } from '../contexts/TerminalContext';
 import apiService from '../services/api.service';
@@ -9,26 +7,67 @@ import style from '../styles/editor.module.scss';
 import Auth from './Auth';
 
 export default function Terminal(props) {
-  const { isFocused, welcomeMessage, id, closeWindow, theme } = props;
+  const {
+    isFocused,
+    welcomeMessage,
+    id,
+    closeWindow,
+    theme,
+    userData,
+    setUserData,
+  } = props;
 
   const [authInProgress, setAuthInProgress] = useState(false);
 
   const commands = {
     help: (
       <span>
-        <strong>clear</strong> - clears the console. <br />
-        <strong>change_prompt &lt;PROMPT&gt;</strong> - Change the prompt of the
-        terminal. <br />
-        <strong>change_theme &lt;THEME&gt;</strong> - Changes the theme of the
-        terminal. Allowed themes - light, dark, material-light, material-dark,
-        material-ocean, matrix and dracula. <br />
-        <strong>toggle_control_bar</strong> - Hides / Display the top control
-        bar. <br />
-        <strong>toggle_control_buttons</strong> - Hides / Display the top
-        buttons on control bar. <br />
-        <strong>evaluate_math_expression &lt;EXPR&gt;</strong> - Evaluates a
-        mathematical expression (eg, <strong>4*4</strong>) by hitting a public
-        API, api.mathjs.org.
+        <strong>auth</strong> - Launches the authentication process.
+        <br />
+        <strong>cd</strong> - Sets the current working location to a specified
+        location.
+        <br />
+        <strong>ls(dir, gci)</strong> - Gets the files and folders in a file
+        system drive.
+        <br />
+        <strong>mkdir(md)</strong> - Creates a new item.
+        <br />
+        <strong>rm(rmdir, rd, ri)</strong> - Deletes files and folders.
+        <br />
+        <strong>clear</strong> - Clears the display in the host program.
+        <br />
+        <strong>help(gcm)</strong> - Gets all commands.
+        <br />
+        <strong>cat(gc)</strong> - Gets the contents of a file.
+        <br />
+        <strong>clhy</strong> - Deletes entries from the command history.
+        <br />
+        <strong>copy(cp, cpi)</strong> - Copies an item from one location to
+        another.
+        <br />
+        <strong>curl(iwr)</strong> - Gets content from a webpage on the
+        Internet.
+        <br />
+        <strong>del(erase)</strong> - Deletes files and folders.
+        <br />
+        <strong>echo</strong> - Sends the specified objects to the next command
+        in the pipeline. If the command is the last command in the pipeline, the
+        objects are displayed in the console.
+        <br />
+        <strong>ghy(h, history)</strong> - Gets a list of the commands entered
+        during the current session.
+        <br />
+        <strong>gl</strong> - Gets information about the current working
+        location or a location stack.
+        <br />
+        <strong>gsv</strong> - Gets the services on a local or remote computer.
+        <br />
+        <strong>move(mi, mv)</strong> - Moves an item from one location to
+        another.
+        <br />
+        <strong>gps(ps)</strong> - Gets the processes that are running on the
+        local computer or a remote computer.
+        <br />
       </span>
     ),
     cd: async (args: string) => {
@@ -38,14 +77,24 @@ export default function Terminal(props) {
       });
       setPrompt(res.data);
     },
-    // cat: async (args) => {
-    //   const res = await apiService.user.defaultHandler({ command: `type ${args}` })
-    //   return <span>{JSON.stringify(res.data)}</span>
-    // },
-    // gc: async (args) => {
-    //   const res = await apiService.user.defaultHandler({ command: `type ${args}` })
-    //   return <span>{JSON.stringify(res.data)}</span>
-    // },
+    cat: (args) =>
+      apiService.user
+        .defaultHandler({
+          command: `type ${args}`,
+          location: prompt,
+          role: userData ? userData.role : 'user',
+        })
+        .then((res) => <span>{JSON.stringify(res.data)}</span>)
+        .catch((err) => <span>{err.response.data.message}</span>),
+    gc: (args) =>
+      apiService.user
+        .defaultHandler({
+          command: `type ${args}`,
+          location: prompt,
+          role: userData ? userData.role : 'user',
+        })
+        .then((res) => <span>{JSON.stringify(res.data)}</span>)
+        .catch((err) => <span>{err.response.data.message}</span>),
     clhy: () => clearHistory(),
     gcm: () => <span>{Object.keys(commands)}</span>,
     ghy: () => <span>{getHistory()}</span>,
@@ -56,6 +105,7 @@ export default function Terminal(props) {
       const res = await apiService.user.defaultHandler({
         command: `powershell -command "Invoke-WebRequest -Uri %${args}% -Method POST"`,
         location: prompt,
+        role: userData ? userData.role : 'user',
       });
       return <span>{res.data}</span>;
     },
@@ -109,7 +159,7 @@ export default function Terminal(props) {
           <span className={style.caret}>
             <span
               className={style.caretAfter}
-              style={{ background: theme.themeColor }}
+              style={{ background: theme.themePromptColor }}
             />
           </span>
         ) : null}
@@ -264,9 +314,13 @@ export default function Terminal(props) {
           }
         } else {
           output = await apiService.user
-            .defaultHandler({ command: text, location: prompt })
+            .defaultHandler({
+              command: text,
+              location: prompt,
+              role: userData ? userData.role : 'user',
+            })
             .then((res) => <span>{res.data}</span>)
-            .catch(() => <span>Unsupported command</span>);
+            .catch((err) => <span>{err.response.data.message}</span>);
         }
       }
 
@@ -313,6 +367,9 @@ export default function Terminal(props) {
             caret
             propmt={prompt}
             setAuthInProgress={setAuthInProgress}
+            setUserData={setUserData}
+            buffered={bufferedContent}
+            setBuffered={setBufferedContent}
           />
         ) : null}
         {currentLine}
@@ -323,20 +380,3 @@ export default function Terminal(props) {
     </div>
   );
 }
-
-Terminal.propTypes = {
-  isFocused: PropTypes.bool.isRequired,
-  welcomeMessage: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func,
-    PropTypes.node,
-  ]).isRequired,
-  theme: PropTypes.shape({
-    themeBGColor: PropTypes.string,
-    themeToolbarColor: PropTypes.string,
-    themeColor: PropTypes.string,
-    themePromptColor: PropTypes.string,
-  }),
-  id: PropTypes.string.isRequired,
-  closeWindow: PropTypes.func.isRequired,
-};

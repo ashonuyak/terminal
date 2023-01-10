@@ -6,7 +6,7 @@ function MenuBar(props) {
     <div
       className={style.dropdown}
       style={{
-        backgroundColor: props.theme.themeToolbarColor,
+        backgroundColor: props.theme.themeBGColor,
         display: 'flex',
         justifyContent: 'space-between',
       }}
@@ -22,18 +22,20 @@ function MenuBar(props) {
         className={style.dropbtn}
         style={{
           color: props.theme.themePromptColor,
-          backgroundColor: props.theme.themeToolbarColor,
+          backgroundColor: props.theme.themeBGColor,
         }}
       >
         Customize
         <div
           className={style.dropdownContent}
-          style={{ backgroundColor: props.theme.themeToolbarColor }}
+          style={{ backgroundColor: props.theme.themeBGColor }}
         >
           <div className={style.dropdownContentItem}>
             <div style={{ marginRight: '20px' }}>Text color</div>{' '}
             <ColorPicker
-              theme={props.theme.themePromptColor}
+              customizationId={props.customizationId}
+              theme={props.theme}
+              type={'textColor'}
               setTheme={(color) =>
                 props.setTheme({
                   ...props.theme,
@@ -45,7 +47,9 @@ function MenuBar(props) {
           <div className={style.dropdownContentItem}>
             <div style={{ marginRight: '20px' }}>Background color</div>{' '}
             <ColorPicker
-              theme={props.theme.themeBGColor}
+              customizationId={props.customizationId}
+              theme={props.theme}
+              type={'backgroundColor'}
               setTheme={(color) => {
                 props.setTheme({
                   ...props.theme,
@@ -61,7 +65,7 @@ function MenuBar(props) {
         className={style.addBtn}
         style={{
           color: props.theme.themePromptColor,
-          backgroundColor: props.theme.themeToolbarColor,
+          backgroundColor: props.theme.themeBGColor,
         }}
       >
         Add window

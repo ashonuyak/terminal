@@ -1,3 +1,2 @@
-export * from './ValidationFailedException'
-export * from './WrongCredentialsException'
-export * from './NotFoundException'
+export * from './wrong-credentials.exception';
+export * from './not-found.exception';

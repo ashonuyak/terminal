@@ -11,14 +11,25 @@ import { TerminalContextProvider } from './contexts/TerminalContext';
 const App = () => {
   const [theme, setTheme] = useState({
     themeBGColor: '#fdf6e4',
-    themeToolbarColor: '#d8d8d8',
-    themeColor: '#333333',
     themePromptColor: '#a917a8',
   });
 
   const [terminals, setTerminals] = useState([
     { id: uuid(), isFocused: false },
   ]);
+
+  const [userData, setUserData] = useState({
+    customization: { id: '', backgroundColor: '', textColor: '' },
+  });
+
+  useEffect(() => {
+    if (userData.customization.backgroundColor) {
+      setTheme({
+        themeBGColor: userData.customization.backgroundColor,
+        themePromptColor: userData.customization.textColor,
+      });
+    }
+  }, [userData]);
 
   const welcomeMessage = (
     <span>
@@ -53,7 +64,12 @@ const App = () => {
 
   return (
     <>
-      <MenuBar theme={theme} setTheme={setTheme} addWindow={addWindow} />
+      <MenuBar
+        theme={theme}
+        setTheme={setTheme}
+        addWindow={addWindow}
+        customizationId={userData.customization.id}
+      />
       <div
         className="App"
         style={{
@@ -75,6 +91,8 @@ const App = () => {
                 welcomeMessage={welcomeMessage}
                 id={item.id}
                 closeWindow={closeWindow}
+                userData={userData}
+                setUserData={setUserData}
               />
               <div
                 style={{

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { SketchPicker } from 'react-color';
 
+import apiService from '../services/api.service';
+
 function ColorPicker(props) {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
-  const [color, setColor] = useState(props.theme);
+  const [color, setColor] = useState(props.theme[props.type]);
 
   const handleClick = () => {
     setDisplayColorPicker(!displayColorPicker);
@@ -16,6 +18,12 @@ function ColorPicker(props) {
   const handleChange = (color) => {
     props.setTheme(color.hex);
     setColor(color.hex);
+    if (props.customizationId) {
+      apiService.user.customize({
+        [props.type]: color.hex,
+        id: props.customizationId,
+      });
+    }
   };
 
   return (

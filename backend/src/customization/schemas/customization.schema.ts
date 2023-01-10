@@ -20,8 +20,8 @@ export class Customization {
     if (data) {
       (this.id = uuid()),
         (this.textColor = data.textColor),
-        (this.backgroundColor = data.backgroundColor);
-      this.user = data.user;
+        (this.backgroundColor = data.backgroundColor),
+        (this.user = data.user);
     }
   }
 }

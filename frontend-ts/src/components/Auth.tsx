@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react';
 
 import Utils from '../common/Utils';
+import apiService from '../services/api.service';
 import style from '../styles/editor.module.scss';
 
 export default function Auth(props) {
-  const { isFocused, enableInput, theme, caret, prompt, setAuthInProgress } =
-    props;
+  const {
+    isFocused,
+    enableInput,
+    theme,
+    caret,
+    prompt,
+    setAuthInProgress,
+    setUserData,
+    buffered,
+    setBuffered,
+  } = props;
 
   const [step, setStep] = useState('name');
   const [editorInput, setEditorInput] = useState('');
@@ -33,7 +43,7 @@ export default function Auth(props) {
           <span className={style.caret}>
             <span
               className={style.caretAfter}
-              style={{ background: theme.themeColor }}
+              style={{ background: theme.themePromptColor }}
             />
           </span>
         ) : null}
@@ -69,7 +79,24 @@ export default function Auth(props) {
       }
       if (step === 'password') {
         setPassword(editorInput);
-        setAuthInProgress(false);
+        apiService.user
+          .auth({ name, password: editorInput })
+          .then((res) => setUserData(res.data))
+          .catch((err) => {
+            setBuffered(
+              <>
+                {buffered}
+                <span
+                  className={`${style.lineText} ${style.preWhiteSpace}`}
+                  style={{ color: theme.themePromptColor }}
+                >
+                  {err.response.data.message}
+                </span>
+                <br />
+              </>,
+            );
+          })
+          .finally(() => setAuthInProgress(false));
       }
       setProcessCurrentLine(true);
       return;

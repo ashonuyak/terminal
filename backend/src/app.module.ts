@@ -4,25 +4,27 @@ import { AuthModule } from './auth';
 import { CommandsController } from './commands/commands.controller';
 import { CommandsModule } from './commands/commands.module';
 import { UserModule } from './user';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
-// import { config } from './config/config';
-// import { DatabaseConfig } from './config/database.config';
+import { config } from './config/config';
+import { DatabaseConfig } from './config/database.config';
+import { CustomizationModule } from './customization/customization.module';
 
 @Module({
   imports: [
     CommandsModule,
     UserModule,
     AuthModule,
-    // ConfigModule.forRoot({
-    //   isGlobal: true,
-    //   load: [config],
-    // }),
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useClass: DatabaseConfig,
-    // }),
+    CustomizationModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [config],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: DatabaseConfig,
+    }),
   ],
 })
 export class AppModule implements NestModule {
